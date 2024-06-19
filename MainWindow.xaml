@@ -1,0 +1,26 @@
+﻿<Window x:Class="StudentDataGetterApp.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:StudentDataGetterApp"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="470" Width="800">
+    <Grid Height="470">
+        <TextBlock HorizontalAlignment="Left" Margin="20,21,0,0" TextWrapping="Wrap" VerticalAlignment="Top" FontSize="30"><Run Language="zh-tw" Text="學生資料獲取小工具"/></TextBlock>
+        <Button x:Name="CookieFileSelecter" Content="更改 Chrome Cookie 檔案位置" HorizontalAlignment="Left" Margin="20,79,0,0" VerticalAlignment="Top" RenderTransformOrigin="0,0" Height="34" Width="256" FontSize="15" Click="CookieFileSelecter_Click" BorderBrush="#FFB7B6B6" Background="#FFAEEEFF" FontFamily="Microsoft JhengHei"/>
+        <Label x:Name="CookieFileLabel" Content="預設位置 %LocalAppData%\Google\Chrome\User Data\Default\Network\Cookies" HorizontalAlignment="Left" Height="28" Margin="20,118,0,0" VerticalAlignment="Top" Width="759"/>
+        <Button x:Name="ChromeStateFileSelecter" Content="更改 Chrome Local State 檔案位置" HorizontalAlignment="Left" Margin="20,151,0,0" VerticalAlignment="Top" RenderTransformOrigin="0,0" Height="34" Width="256" FontSize="15" Click="CookieFileSelecter_Click" BorderBrush="#FFB7B6B6" Background="#FFAEEEFF" FontFamily="Microsoft JhengHei"/>
+        <Label x:Name="ChromeStateFileLabel" Content="預設位置C:\Users\Username\AppData\Local\Google\Chrome\User Data\Local State" HorizontalAlignment="Left" Height="28" Margin="20,200,0,0" VerticalAlignment="Top" Width="760"/>
+        <Label Content="查詢起始年度" HorizontalAlignment="Left" Margin="20,231,0,0" VerticalAlignment="Top"/>
+        <Label Content="查詢結束年度" HorizontalAlignment="Left" Margin="170,231,0,0" VerticalAlignment="Top"/>
+        <ComboBox x:Name="LowerYearComboBox" HorizontalAlignment="Left" Margin="20,256,0,0" VerticalAlignment="Top" Width="120" SelectionChanged="LowerYearComboBox_SelectionChanged"/>
+        <ComboBox x:Name="UpperYearComboBox" HorizontalAlignment="Left" Margin="170,256,0,0" VerticalAlignment="Top" Width="120"/>
+        <CheckBox x:Name="日間部" Content="日間部" HorizontalAlignment="Left" Margin="20,293,0,0" VerticalAlignment="Top" IsChecked="True" Checked="日間部_Checked"/>
+        <CheckBox x:Name="進修部" Content="進修部" HorizontalAlignment="Left" Margin="93,293,0,0" VerticalAlignment="Top" IsChecked="False" Checked="進修部_Checked"/>
+        <CheckBox x:Name="學士班" Content="學士班" HorizontalAlignment="Left" Margin="20,323,0,0" VerticalAlignment="Top" IsChecked="True" Checked="學士班_Checked"/>
+        <CheckBox x:Name="碩士班" Content="碩士班" HorizontalAlignment="Left" Margin="92,323,0,0" VerticalAlignment="Top" Checked="碩士班_Checked"/>
+        <CheckBox x:Name="博士班" Content="博士班" HorizontalAlignment="Left" Margin="155,323,0,0" VerticalAlignment="Top" Checked="博士班_Checked"/>
+        <Button x:Name="StartGetter" Content="開始獲取" HorizontalAlignment="Left" Margin="20,369,0,0" VerticalAlignment="Top" Height="36" Width="120" Background="#FFA7FFED" BorderBrush="White" Click="StartGetter_Click"/>
+    </Grid>
+</Window>
