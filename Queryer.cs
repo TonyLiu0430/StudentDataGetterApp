@@ -24,13 +24,6 @@ namespace StudentDataGetterApp {
         private readonly string cookie;
 
         public Queryer(string cookie, Dictionary<Department, SortedSet<Student>> StudentSet) {
-            /*
-            httpHandler = new HttpClientHandler();
-            httpHandler.CookieContainer = new CookieContainer();
-            // 添加你的cookie到CookieContainer
-            httpHandler.CookieContainer.SetCookies(new Uri("https://outlook.office365.com"), cookie.Replace(";", ",").ToString());
-            //httpClient = new HttpClient(handler);
-            */
             this.StudentSet = StudentSet;
             this.cookie = cookie.Replace(";", ",");
         }
