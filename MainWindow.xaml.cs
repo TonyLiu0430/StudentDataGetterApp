@@ -127,5 +127,13 @@ namespace StudentDataGetterApp {
                 }
             }
         }
+
+        private void OpenResultDir_Click(object sender, RoutedEventArgs e) {
+            System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo {
+                FileName = "explorer.exe",
+                Arguments = ".\\result",
+                WindowStyle = System.Diagnostics.ProcessWindowStyle.Normal
+            });
+        }
     }
 }
