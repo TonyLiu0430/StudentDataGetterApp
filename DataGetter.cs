@@ -72,6 +72,13 @@ namespace StudentDataGetterApp {
                     else {
                         string studentId8 = $@"s4{year}{departmentId}";
                         await query.GetStudentData(studentId8, 100);
+                        for (int j = 5; j <= 9; j++) {
+                            string studentId9 = $"{studentId8}{j}";
+                            bool res = await query.GetStudentData(studentId9, 10);
+                            if (!res) {
+                                break;
+                            }
+                        }
                     }
                     //增加進度條
                     action();
