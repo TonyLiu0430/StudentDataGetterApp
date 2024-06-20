@@ -55,15 +55,23 @@ namespace StudentDataGetterApp {
                                 break;
                             }
                             string studentId8 = $"{studentId7}{i}";
-                            bool remain = await query.GetStudentData(studentId8);
+                            bool remain = await query.GetStudentData(studentId8, 100);
                             if (!remain) {
                                 alreadyGetAllStudent = true;
+                                continue;
+                            }
+                            for(int j = 5; j <= 9; j++) {
+                                string studentId9 = $"{studentId8}{j}";
+                                bool res = await query.GetStudentData(studentId9, 10);
+                                if (!res) {
+                                    break;
+                                }
                             }
                         }
                     } 
                     else {
                         string studentId8 = $@"s4{year}{departmentId}";
-                        await query.GetStudentData(studentId8);
+                        await query.GetStudentData(studentId8, 100);
                     }
                     //增加進度條
                     action();
