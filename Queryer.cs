@@ -74,6 +74,10 @@ namespace StudentDataGetterApp {
             try {
                 response.EnsureSuccessStatusCode();
             } catch (HttpRequestException e) {
+                if(response.StatusCode == HttpStatusCode.Unauthorized) {
+                    MessageBox.Show("Cookie 錯誤 未登入", "錯誤", MessageBoxButton.OK, MessageBoxImage.Error);
+                    throw new UnAuthorizedException("Cookie 錯誤 未登入");
+                }
                 MessageBox.Show($"獲取資料失敗 {e.Message}", "錯誤", MessageBoxButton.OK, MessageBoxImage.Error);
                 return false;
             }
@@ -108,6 +112,17 @@ namespace StudentDataGetterApp {
                 }
             }
             return flag;
+        }
+    }
+
+    public class UnAuthorizedException : Exception {
+        public UnAuthorizedException() {
+        }
+
+        public UnAuthorizedException(string message) : base(message) {
+        }
+
+        public UnAuthorizedException(string message, Exception innerException) : base(message, innerException) {
         }
     }
 }

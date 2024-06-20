@@ -107,10 +107,15 @@ namespace StudentDataGetterApp {
             dataGetter.QueryYearUpper = (int)UpperYearComboBox.SelectedItem;
             dataGetter.Cookie = CookieInput.Text;
             FetchingProgressBar.IsIndeterminate = true;
-            await dataGetter.StartFetchingAsync(() => { });
-            FetchingProgressBar.IsIndeterminate = false;
+            try {
+                await dataGetter.StartFetchingAsync(() => { });
+            }catch(UnAuthorizedException) {
+                return;
+            } finally {
+                FetchingProgressBar.IsIndeterminate = false;
+                StartGetter.IsEnabled = true;
+            }
             dataGetter.SaveData();
-            StartGetter.IsEnabled = true;
             MessageBox.Show("資料已儲存", "成功", MessageBoxButton.OK, MessageBoxImage.Information);
 
             if (!Directory.Exists(".\\record")) {
