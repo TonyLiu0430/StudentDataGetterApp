@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:StudentDataGetterApp"
         mc:Ignorable="d"
         Title="MainWindow" Height="470" Width="800">
-    <Grid Height="470">
+    <Grid Height="470" HorizontalAlignment="Left" VerticalAlignment="Top">
         <TextBlock HorizontalAlignment="Left" Margin="20,21,0,0" TextWrapping="Wrap" VerticalAlignment="Top" FontSize="30"><Run Language="zh-tw" Text="學生資料獲取小工具"/></TextBlock>
         <Label Content="查詢起始年度" HorizontalAlignment="Left" Margin="20,231,0,0" VerticalAlignment="Top"/>
         <Label Content="查詢結束年度" HorizontalAlignment="Left" Margin="170,231,0,0" VerticalAlignment="Top"/>
