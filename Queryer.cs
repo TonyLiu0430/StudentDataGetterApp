@@ -7,96 +7,57 @@ using System.Net;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using System.Collections.ObjectModel;
 
 namespace StudentDataGetterApp {
 
     internal class Queryer {
 
-        private readonly HttpClient httpClient;
+        //private HttpClient httpClient;
+        //private readonly HttpClientHandler httpHandler;
+        public int queryCount = 92;
 
-        public int queryCount = 30;
+        private readonly Dictionary<Department, SortedSet<Student>> StudentSet;
+        private readonly string cookie;
 
-        public Queryer(string cookie) {
-            var handler = new HttpClientHandler();
-            handler.CookieContainer = new CookieContainer();
+        public Queryer(string cookie, Dictionary<Department, SortedSet<Student>> StudentSet) {
+            /*
+            httpHandler = new HttpClientHandler();
+            httpHandler.CookieContainer = new CookieContainer();
             // 添加你的cookie到CookieContainer
-            //handler.CookieContainer.Add(new Uri("https://outlook.office365.com"), cookie);
-            handler.CookieContainer.SetCookies(new Uri("https://outlook.office365.com"), cookie.ToString());
-            // 如果有更多的cookie，重複上面的Add方法來添加
-
-            httpClient = new HttpClient(handler);
+            httpHandler.CookieContainer.SetCookies(new Uri("https://outlook.office365.com"), cookie.Replace(";", ",").ToString());
+            //httpClient = new HttpClient(handler);
+            */
+            this.StudentSet = StudentSet;
+            this.cookie = cookie.Replace(";", ",");
         }
-        public async Task<List<Student>> getStudentList(string studentId8) {
-            string url = $"https://outlook.office365.com/owa/service.svc?action=FindPeople&app=People&n={queryCount}";
+        public async Task<bool> GetStudentData(string studentId8) {
             queryCount += 3;
-            List<Student> studentList = new List<Student>();
-            string urlpostdataOrigin = """
-                {"__type":"FindPeopleJsonRequest:#Exchange","Header":{"__type":"JsonRequestHeaders:#Exchange","RequestServerVersion":"V2018_01_08","TimeZoneContext":{"__type":"TimeZoneContext:#Exchange","TimeZoneDefinition":{"__type":"TimeZoneDefinitionType:#Exchange","Id":"Taipei Standard Time"}}},"Body":{"__type":"FindPeopleRequest:#Exchange","IndexedPageItemView":{"__type":"IndexedPageView:#Exchange","BasePoint":"Beginning","Offset":0,"MaxEntriesReturned":100},"PersonaShape":{"__type":"PersonaResponseShape:#Exchange","BaseShape":"Default","AdditionalProperties":[{"__type":"PropertyUri:#Exchange","FieldURI":"PersonaAttributions"},{"__type":"PropertyUri:#Exchange","FieldURI":"PersonaRelevanceScore"},{"__type":"PropertyUri:#Exchange","FieldURI":"PersonaTitle"}]},"ShouldResolveOneOffEmailAddress":false,"QueryString":"
-                """;
-            urlpostdataOrigin += studentId8;
-            urlpostdataOrigin += """
-                ","SearchPeopleSuggestionIndex":true,"Context":[{"__type":"ContextProperty:#Exchange","Key":"AppName","Value":"OWA"},{"__type":"ContextProperty:#Exchange","Key":"AppScenario","Value":"peopleHubReact"},{"__type":"ContextProperty:#Exchange","Key":"DisableAdBasedPersonaIdForPersonalContacts","Value":"true"}],"QuerySources":["Mailbox","Directory"]}}
-                """;
+            string url = $"https://outlook.office365.com/owa/service.svc?action=FindPeople&app=People&n={queryCount}";
+            string urlpostdataOrigin = $@"%7B%22__type%22%3A%22FindPeopleJsonRequest%3A%23Exchange%22%2C%22Header%22%3A%7B%22__type%22%3A%22JsonRequestHeaders%3A%23Exchange%22%2C%22RequestServerVersion%22%3A%22V2018_01_08%22%2C%22TimeZoneContext%22%3A%7B%22__type%22%3A%22TimeZoneContext%3A%23Exchange%22%2C%22TimeZoneDefinition%22%3A%7B%22__type%22%3A%22TimeZoneDefinitionType%3A%23Exchange%22%2C%22Id%22%3A%22Taipei%20Standard%20Time%22%7D%7D%7D%2C%22Body%22%3A%7B%22__type%22%3A%22FindPeopleRequest%3A%23Exchange%22%2C%22IndexedPageItemView%22%3A%7B%22__type%22%3A%22IndexedPageView%3A%23Exchange%22%2C%22BasePoint%22%3A%22Beginning%22%2C%22Offset%22%3A0%2C%22MaxEntriesReturned%22%3A100%7D%2C%22PersonaShape%22%3A%7B%22__type%22%3A%22PersonaResponseShape%3A%23Exchange%22%2C%22BaseShape%22%3A%22Default%22%2C%22AdditionalProperties%22%3A%5B%7B%22__type%22%3A%22PropertyUri%3A%23Exchange%22%2C%22FieldURI%22%3A%22PersonaAttributions%22%7D%2C%7B%22__type%22%3A%22PropertyUri%3A%23Exchange%22%2C%22FieldURI%22%3A%22PersonaRelevanceScore%22%7D%2C%7B%22__type%22%3A%22PropertyUri%3A%23Exchange%22%2C%22FieldURI%22%3A%22PersonaTitle%22%7D%5D%7D%2C%22ShouldResolveOneOffEmailAddress%22%3Afalse%2C%22QueryString%22%3A%22{studentId8}%22%2C%22SearchPeopleSuggestionIndex%22%3Atrue%2C%22Context%22%3A%5B%7B%22__type%22%3A%22ContextProperty%3A%23Exchange%22%2C%22Key%22%3A%22AppName%22%2C%22Value%22%3A%22OWA%22%7D%2C%7B%22__type%22%3A%22ContextProperty%3A%23Exchange%22%2C%22Key%22%3A%22AppScenario%22%2C%22Value%22%3A%22peopleHubReact%22%7D%2C%7B%22__type%22%3A%22ContextProperty%3A%23Exchange%22%2C%22Key%22%3A%22DisableAdBasedPersonaIdForPersonalContacts%22%2C%22Value%22%3A%22true%22%7D%5D%2C%22QuerySources%22%3A%5B%22Mailbox%22%2C%22Directory%22%5D%7D%7D";
 
-
-
-            var jsonRequest = new {
-                __type = "FindPeopleJsonRequest:#Exchange",
-                Header = new {
-                    __type = "JsonRequestHeaders:#Exchange",
-                    RequestServerVersion = "V2018_01_08",
-                    TimeZoneContext = new {
-                        __type = "TimeZoneContext:#Exchange",
-                        TimeZoneDefinition = new {
-                            __type = "TimeZoneDefinitionType:#Exchange",
-                            Id = "Taipei Standard Time"
-                        }
-                    }
-                },
-                Body = new {
-                    __type = "FindPeopleRequest:#Exchange",
-                    IndexedPageItemView = new {
-                        __type = "IndexedPageView:#Exchange",
-                        BasePoint = "Beginning",
-                        Offset = 0,
-                        MaxEntriesReturned = 10
-                    },
-                    PersonaShape = new {
-                        __type = "PersonaResponseShape:#Exchange",
-                        BaseShape = "Default",
-                        AdditionalProperties = new[]
-                        {
-                            new { __type = "PropertyUri:#Exchange", FieldURI = "PersonaAttributions" },
-                            new { __type = "PropertyUri:#Exchange", FieldURI = "PersonaRelevanceScore" },
-                            new { __type = "PropertyUri:#Exchange", FieldURI = "PersonaTitle" }
-                        }
-                    },
-                    ShouldResolveOneOffEmailAddress = false,
-                    QueryString = "s411285",
-                    SearchPeopleSuggestionIndex = true,
-                    Context = new[]
-                    {
-                        new { __type = "ContextProperty:#Exchange", Key = "AppName", Value = "OWA" },
-                        new { __type = "ContextProperty:#Exchange", Key = "AppScenario", Value = "peopleHubReact" },
-                        new { __type = "ContextProperty:#Exchange", Key = "DisableAdBasedPersonaIdForPersonalContacts", Value = "true" }
-                    },
-                    QuerySources = new[] { "Mailbox", "Directory" }
-                }
-            };
-
-            string jsonString = Newtonsoft.Json.JsonConvert.SerializeObject(jsonRequest);
-            StringContent content = new StringContent(jsonString, Encoding.UTF8, "application/json");
-
-            // 設置請求標頭
-            httpClient.DefaultRequestHeaders.Accept.Clear();
+            using var httpHandler = new HttpClientHandler();
+            httpHandler.CookieContainer = new CookieContainer();
+            // 添加你的cookie到CookieContainer
+            httpHandler.CookieContainer.SetCookies(new Uri("https://outlook.office365.com"), cookie);
+            using var httpClient = new HttpClient(httpHandler);
             httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("*/*"));
-            httpClient.DefaultRequestHeaders.Add("accept-language", "zh-TW,zh-CN;q=0.9,zh;q=0.8,en-US;q=0.7,en;q=0.6");
+            httpClient.DefaultRequestHeaders.AcceptLanguage.Add(new StringWithQualityHeaderValue("zh-TW"));
+            httpClient.DefaultRequestHeaders.AcceptLanguage.Add(new StringWithQualityHeaderValue("zh-CN", 0.9));
+            httpClient.DefaultRequestHeaders.AcceptLanguage.Add(new StringWithQualityHeaderValue("zh", 0.8));
+            httpClient.DefaultRequestHeaders.AcceptLanguage.Add(new StringWithQualityHeaderValue("en-US", 0.7));
+            httpClient.DefaultRequestHeaders.AcceptLanguage.Add(new StringWithQualityHeaderValue("en", 0.6));
             httpClient.DefaultRequestHeaders.Add("action", "FindPeople");
-            httpClient.DefaultRequestHeaders.CacheControl = new CacheControlHeaderValue { NoCache = true };
-            httpClient.DefaultRequestHeaders.Add("ms-cv", "/ZW8KkHwg8OZxy/rtcOqko.114");
-            httpClient.DefaultRequestHeaders.Pragma.Clear();
+            httpClient.DefaultRequestHeaders.CacheControl = new CacheControlHeaderValue {
+                NoCache = true
+            };
+            httpClient.DefaultRequestHeaders.Add("ms-cv", $@"YQwjnlMJzAK9pZx/pUa9Sf.{queryCount}");
+            httpClient.DefaultRequestHeaders.Add("origin", "https://outlook.office365.com");
             httpClient.DefaultRequestHeaders.Pragma.Add(new NameValueHeaderValue("no-cache"));
-            httpClient.DefaultRequestHeaders.Add("prefer", "exchange.behavior=IncludeThirdPartyOnlineMeetingProviders");
+            httpClient.DefaultRequestHeaders.Add("prefer", "exchange.behavior=\"IncludeThirdPartyOnlineMeetingProviders\"");
             httpClient.DefaultRequestHeaders.Add("priority", "u=1, i");
             httpClient.DefaultRequestHeaders.Add("sec-ch-ua", "\"Not/A)Brand\";v=\"8\", \"Chromium\";v=\"126\", \"Google Chrome\";v=\"126\"");
             httpClient.DefaultRequestHeaders.Add("sec-ch-ua-mobile", "?0");
@@ -104,59 +65,56 @@ namespace StudentDataGetterApp {
             httpClient.DefaultRequestHeaders.Add("sec-fetch-dest", "empty");
             httpClient.DefaultRequestHeaders.Add("sec-fetch-mode", "cors");
             httpClient.DefaultRequestHeaders.Add("sec-fetch-site", "same-origin");
-            httpClient.DefaultRequestHeaders.Add("x-owa-canary", "bdvoV1qYFd8AAAAAAAAAAGBXTxd-j9wY2KxchpC-ZlTAtKBBLN94465zGSHMIstEFmnEaBQVvzo.");
-            httpClient.DefaultRequestHeaders.Add("x-owa-canary-debug", $"({DateTime.UtcNow.ToString()})(S:S-1-5-21-86608550-739683862-1502845539-6761089)(I:57e8db6d985adf150000000000000000)(H:D8AC5C8690BE6654C0B4A0412CDF78E3AE731921CC22CB441669C4681415BF3A)(K:CertConstKeyHmac)(L:bdvoV1qYFd8AAAAAAAAAAGBXTxd-j9wY)");
-            httpClient.DefaultRequestHeaders.Add("x-owa-correlationid", "71ab4b87-f45f-da9b-643c-dac00351d5d1");
+            httpClient.DefaultRequestHeaders.Add("x-owa-canary", "bdvoV1qYFd8AAAAAAAAAAAA_0LWKkNwYIAdbuhx8e78VAqYhswIpN6eacpgksnWcy2nE556TJWk.");
+            httpClient.DefaultRequestHeaders.Add("x-owa-canary-debug", "(T:2024-06-20T14:26:56.8793104Z)(S:S-1-5-21-86608550-739683862-1502845539-6761089)(I:57e8db6d985adf150000000000000000)(H:A6AA39E73A0BC8548676D35BA1CBDE80D820CC64007B7380822D2BE420719623)(K:CertConstKeyHmac)(L:bdvoV1qYFd8AAAAAAAAAABAktN9rkNwY)");
+            httpClient.DefaultRequestHeaders.Add("x-owa-correlationid", "457aae00-552f-ce01-bd37-d19b38e57938");
             httpClient.DefaultRequestHeaders.Add("x-owa-hosted-ux", "false");
-            httpClient.DefaultRequestHeaders.Add("x-owa-sessionid", "e0f67514-4f1e-423d-bba9-a9e199c76896");
-            httpClient.DefaultRequestHeaders.Add("x-owa-urlpostdata", WebUtility.UrlEncode(urlpostdataOrigin));
+            httpClient.DefaultRequestHeaders.Add("x-owa-sessionid", "1140b4ae-a8bb-46c3-a5a1-c55fafd4edd1");
+            httpClient.DefaultRequestHeaders.Add("x-owa-urlpostdata", /*WebUtility.UrlEncode(*/urlpostdataOrigin);
             httpClient.DefaultRequestHeaders.Add("x-req-source", "People");
 
-
-            // 發送請求並獲取響應
-            HttpResponseMessage response = await httpClient.PostAsync(url, content);
-
-            // 確保響應成功
+            using var jsonContent = new StringContent("");
+            jsonContent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+            jsonContent.Headers.ContentType.CharSet = "utf-8";
+            // 發送POST請求
+            var response = await httpClient.PostAsync(url, jsonContent);
             try {
                 response.EnsureSuccessStatusCode();
             } catch (HttpRequestException e) {
-                Console.WriteLine($"獲取資料失敗 {e.Message}");
-                Thread.Sleep(10000);
-                return new List<Student>();
+                MessageBox.Show($"獲取資料失敗 {e.Message}", "錯誤", MessageBoxButton.OK, MessageBoxImage.Error);
+                return false;
             }
 
             // 讀取響應內容
-            string responseBody = await response.Content.ReadAsStringAsync();
-            Console.WriteLine(responseBody);
+            var responseBody = await response.Content.ReadAsStringAsync();
 
-            return new List<Student>();
+            var res = Parseresponse(responseBody);
+
+            return res;
         }
-
+    
+        private bool Parseresponse(string responseBody) {
+            var response = JObject.Parse(responseBody);
+            var resultSet = response["Body"]["ResultSet"];
+            var flag = false;
+            foreach(var student in resultSet.Children()) {
+                string studentId = (string)student["Nickname"];
+                string studentName = (string)student["DisplayName"];
+                var studentNew = new Student {
+                    Id = studentId,
+                    Name = studentName,
+                    Department = Department.GetDepartmentFromStudent(studentId)
+                };
+                var studentDepartment = Department.GetDepartmentFromStudent(studentId);
+                if (!StudentSet.ContainsKey(studentDepartment)) {
+                    StudentSet[studentDepartment] = new SortedSet<Student>(new StudentComparer());
+                }
+                if(!StudentSet[studentDepartment].Contains(studentNew)) {
+                    flag = true;
+                    StudentSet[studentDepartment].Add(studentNew);
+                }
+            }
+            return flag;
+        }
     }
 }
-
-
-/*
-namespace StudentDataGetterApp {
-
-    internal class Queryer {
-
-        private readonly HttpClient httpClient;
-
-        public Queryer() {
-            var handler = new HttpClientHandler();
-            handler.CookieContainer = new CookieContainer();
-            // 添加你的cookie到CookieContainer
-            handler.CookieContainer.Add(new Uri("https://outlook.office365.com"), new Cookie("cookie名稱", "cookie值"));
-            // 如果有更多的cookie，重複上面的Add方法來添加
-
-            httpClient = new HttpClient(handler);
-        }
-
-        public int queryCount = 30;
-        public async Task<List<Student>> getStudentList(string studentId8) {
-            // 你的方法實現...
-        }
-    }
-}*/
-

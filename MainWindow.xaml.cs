@@ -26,7 +26,7 @@ namespace StudentDataGetterApp {
             LowerYearComboBox.ItemsSource = Enumerable.Range(minumumYear, DateTime.Now.Year - (minumumYear + 1911) + 1).ToList();
             UpperYearComboBox.ItemsSource = Enumerable.Range(minumumYear, DateTime.Now.Year - (minumumYear + 1911) + 1).ToList();
         }
-
+        /*
         private void CookieFileSelecter_Click(object sender, RoutedEventArgs e) {
             var dialog = new Microsoft.Win32.OpenFileDialog {
                 DefaultExt = "",
@@ -36,7 +36,7 @@ namespace StudentDataGetterApp {
             bool? result = dialog.ShowDialog();
             if (result == true) {
                 dataGetter.CookieFile = new FileInfo(dialog.FileName);
-                CookieFileLabel.Content = "現在開啟:" + dataGetter.CookieFile.FullName;
+                //CookieFileLabel.Content = "現在開啟:" + dataGetter.CookieFile.FullName;
             }
         }
 
@@ -49,12 +49,11 @@ namespace StudentDataGetterApp {
             bool? result = dialog.ShowDialog();
             if (result == true) {
                 dataGetter.StateFileOrigin = new FileInfo(dialog.FileName);
-                ChromeStateFileLabel.Content = "現在開啟:" + dataGetter.CookieFile.FullName;
+                //ChromeStateFileLabel.Content = "現在開啟:" + dataGetter.CookieFile.FullName;
             }
         }
-
+        */
         private void LowerYearComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e) {
-            Console.WriteLine(LowerYearComboBox.Text);
             int lowerYear = (int)LowerYearComboBox.SelectedItem;
             UpperYearComboBox.ItemsSource = Enumerable.Range(lowerYear, DateTime.Now.Year - (lowerYear + 1911) + 1).ToList();
         }
@@ -79,7 +78,7 @@ namespace StudentDataGetterApp {
 
         }
 
-        private void StartGetter_Click(object sender, RoutedEventArgs e) {
+        private async void StartGetter_ClickAsync(object sender, RoutedEventArgs e) {
             if(LowerYearComboBox.SelectedItem == null || UpperYearComboBox.SelectedItem == null) {
                 MessageBox.Show("年份不可為空", "錯誤", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
@@ -96,10 +95,16 @@ namespace StudentDataGetterApp {
                 MessageBox.Show("至少選擇一個班別", "錯誤", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
+            if(CookieInput.Text == "") {
+                MessageBox.Show("請輸入Cookie", "錯誤", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
             StartGetter.IsEnabled = false;
             dataGetter.QueryYearLower = (int)LowerYearComboBox.SelectedItem;
             dataGetter.QueryYearUpper = (int)UpperYearComboBox.SelectedItem;
-            dataGetter.StartFetching();
+            dataGetter.Cookie = CookieInput.Text;
+            await dataGetter.StartFetchingAsync();
+            StartGetter.IsEnabled = true;
         }
     }
 }

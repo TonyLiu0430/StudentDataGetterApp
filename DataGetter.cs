@@ -18,17 +18,17 @@ namespace StudentDataGetterApp {
         public FileInfo StateFileOrigin { get; set; } = new FileInfo("C:\\Users\\Username\\AppData\\Local\\Google\\Chrome\\User Data\\Local State");
         public int? QueryYearLower { get; set; }
         public int? QueryYearUpper { get; set; }
+        public string Cookie { get; set; }
 
-        public Dictionary<Department, SortedSet<Student>> StudentSet { get; }
+        public Dictionary<Department, SortedSet<Student>> StudentSet { get; } = new();
 
-        private string cookieKey;
-
-        public void StartFetching() {
-            GetCookieKey();
-            string cookie = GetCookie();
-            Fetching();
+        public async Task StartFetchingAsync() {
+            //GetCookieKey();
+            MessageBox.Show("START", "錯誤", MessageBoxButton.OK, MessageBoxImage.Error);
+            await FetchingAsync();
+            MessageBox.Show("END", "錯誤", MessageBoxButton.OK, MessageBoxImage.Error);
         }
-
+        /*
         private void GetCookieKey() {
             FileInfo StateFile = CopyFile(StateFileOrigin, "Local State");
             try {
@@ -43,11 +43,36 @@ namespace StudentDataGetterApp {
                 }
             }
         }
+        */
+        private async Task FetchingAsync() {
+            var query = new Queryer(Cookie, StudentSet);
+            for (int year = (int)QueryYearLower; year <= (int)QueryYearUpper; year++) {
+                foreach (var department in Department.日間部學士班) {
+                    string departmentId = department.Id;
+                    if (departmentId.Length == 2) {
+                        string studentId7 = $@"s4{year}{departmentId}";
+                        bool alreadyGetAllStudent = false;
+                        for (int i = 0; i < 10; i++) {
+                            if (alreadyGetAllStudent) {
+                                break;
+                            }
+                            string studentId8 = $"{studentId7}{i}";
+                            bool remain = await query.GetStudentData(studentId8);
+                            if (!remain) {
+                                alreadyGetAllStudent = true;
+                            }
+                        }
+                    } 
+                    else {
+                        string studentId8 = $@"s4{year}{departmentId}";
+                        await query.GetStudentData(studentId8);
+                    }
+                }
+            }
 
-        private void Fetching() {
-
+            MessageBox.Show(StudentSet.Count.ToString(), "錯誤", MessageBoxButton.OK, MessageBoxImage.Error);
         }
-
+#if null
         private string GetCookie() {
             using (var connection = new SqlConnection()) {
                 connection.ConnectionString = $@"Data Source={CookieFile.FullName};Read Only=True;";
@@ -70,7 +95,8 @@ namespace StudentDataGetterApp {
             }
             return "";
         }
-
+        */
+#endif
         private FileInfo CopyFile(FileInfo file, string fileName) {
             string tempPath = $@"{Directory.GetCurrentDirectory()}\temp";
             if (!Directory.Exists(tempPath)) {
@@ -83,16 +109,7 @@ namespace StudentDataGetterApp {
         }
     }
 
-    public class Department{
-        public string Name { get; set; }
-        public string Id { get; set; }
-    }
-
-    public class Student {
-        public string Name { get; set; }
-        public string Id { get; set; }
-        public Department Department { get; set; }
-    }
+    
 }
 /*
 using (SqliteConnection connection = new SqliteConnection()) {
