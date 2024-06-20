@@ -50,9 +50,9 @@ namespace StudentDataGetterApp {
                 throw new Exception("暫不支援部別");
             }
 
-            string departmentId = studentId.Substring(5, 3);
+            string studentDepartmentId = studentId.Substring(5, 3);
             foreach (var department in departmentList) {
-                if (departmentId.StartsWith(department.Id)) {
+                if (studentDepartmentId.StartsWith(department.Id)) {
                     return department;
                 }
             }
