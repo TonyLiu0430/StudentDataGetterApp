@@ -112,6 +112,20 @@ namespace StudentDataGetterApp {
             dataGetter.SaveData();
             StartGetter.IsEnabled = true;
             MessageBox.Show("資料已儲存", "成功", MessageBoxButton.OK, MessageBoxImage.Information);
+
+            if (!Directory.Exists(".\\record")) {
+                Directory.CreateDirectory(".\\record");
+            }
+            File.Create(".\\record\\cookie.txt").Close();
+            File.WriteAllText(".\\record\\cookie.txt", CookieInput.Text);
+        }
+
+        private void CookieInput_Init(object sender, EventArgs e) {
+            if(Directory.Exists(".\\record")) {
+                if (File.Exists(".\\record\\cookie.txt")) {
+                    CookieInput.Text = File.ReadAllText(".\\record\\cookie.txt");
+                }
+            }
         }
     }
 }
