@@ -22,11 +22,9 @@ namespace StudentDataGetterApp {
 
         public Dictionary<Department, SortedSet<Student>> StudentSet { get; } = new();
 
-        public async Task StartFetchingAsync() {
+        public async Task StartFetchingAsync(Action action) {
             //GetCookieKey();
-            MessageBox.Show("START", "錯誤", MessageBoxButton.OK, MessageBoxImage.Error);
-            await FetchingAsync();
-            MessageBox.Show("END", "錯誤", MessageBoxButton.OK, MessageBoxImage.Error);
+            await FetchingAsync(action);
         }
         /*
         private void GetCookieKey() {
@@ -44,7 +42,7 @@ namespace StudentDataGetterApp {
             }
         }
         */
-        private async Task FetchingAsync() {
+        private async Task FetchingAsync(Action action) {
             var query = new Queryer(Cookie, StudentSet);
             for (int year = (int)QueryYearLower; year <= (int)QueryYearUpper; year++) {
                 foreach (var department in Department.日間部學士班) {
@@ -67,10 +65,17 @@ namespace StudentDataGetterApp {
                         string studentId8 = $@"s4{year}{departmentId}";
                         await query.GetStudentData(studentId8);
                     }
+                    //增加進度條
+                    action();
                 }
             }
-
-            MessageBox.Show(StudentSet.Count.ToString(), "錯誤", MessageBoxButton.OK, MessageBoxImage.Error);
+        }
+        
+        public void SaveData() {
+            string json = JsonConvert.SerializeObject(StudentSet, Formatting.Indented);
+            Directory.CreateDirectory(".\\result");
+            File.Create(".\\result\\data.json").Close();
+            File.WriteAllText(".\\result\\data.json", json);
         }
 #if null
         private string GetCookie() {
@@ -96,7 +101,7 @@ namespace StudentDataGetterApp {
             return "";
         }
         */
-#endif
+
         private FileInfo CopyFile(FileInfo file, string fileName) {
             string tempPath = $@"{Directory.GetCurrentDirectory()}\temp";
             if (!Directory.Exists(tempPath)) {
@@ -107,9 +112,10 @@ namespace StudentDataGetterApp {
             }
             return new FileInfo(tempPath + $@"\{fileName}");
         }
+#endif
     }
 
-    
+
 }
 /*
 using (SqliteConnection connection = new SqliteConnection()) {

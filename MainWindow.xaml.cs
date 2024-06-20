@@ -63,7 +63,8 @@ namespace StudentDataGetterApp {
         }
 
         private void 進修部_Checked(object sender, RoutedEventArgs e) {
-
+            MessageBox.Show("暫不支援進修部", "錯誤", MessageBoxButton.OK, MessageBoxImage.Error);
+            進修部.IsChecked = false;
         }
 
         private void 學士班_Checked(object sender, RoutedEventArgs e) {
@@ -71,11 +72,13 @@ namespace StudentDataGetterApp {
         }
 
         private void 碩士班_Checked(object sender, RoutedEventArgs e) {
-
+            MessageBox.Show("暫不支援碩士班", "錯誤", MessageBoxButton.OK, MessageBoxImage.Error);
+            碩士班.IsChecked = false;
         }
 
         private void 博士班_Checked(object sender, RoutedEventArgs e) {
-
+            MessageBox.Show("暫不支援博士班", "錯誤", MessageBoxButton.OK, MessageBoxImage.Error);
+            博士班.IsChecked = false;
         }
 
         private async void StartGetter_ClickAsync(object sender, RoutedEventArgs e) {
@@ -103,8 +106,12 @@ namespace StudentDataGetterApp {
             dataGetter.QueryYearLower = (int)LowerYearComboBox.SelectedItem;
             dataGetter.QueryYearUpper = (int)UpperYearComboBox.SelectedItem;
             dataGetter.Cookie = CookieInput.Text;
-            await dataGetter.StartFetchingAsync();
+            FetchingProgressBar.IsIndeterminate = true;
+            await dataGetter.StartFetchingAsync(() => { });
+            FetchingProgressBar.IsIndeterminate = false;
+            dataGetter.SaveData();
             StartGetter.IsEnabled = true;
+            MessageBox.Show("資料已儲存", "成功", MessageBoxButton.OK, MessageBoxImage.Information);
         }
     }
 }
