@@ -22,26 +22,10 @@ namespace StudentDataGetterApp {
 
         public Dictionary<Department, SortedSet<Student>> StudentSet { get; } = new();
 
-        public async Task StartFetchingAsync(Action action) {
+        public async Task StartFetchingAsync(Action action = null) {
             //GetCookieKey();
             await FetchingAsync(action);
         }
-        /*
-        private void GetCookieKey() {
-            FileInfo StateFile = CopyFile(StateFileOrigin, "Local State");
-            try {
-                string stateJsonStr = File.ReadAllText(StateFile.FullName);
-                cookieKey = JObject.Parse(stateJsonStr)["os_crypt"]["encrypted_key"].ToString();
-                if (cookieKey == null || cookieKey == "") {
-                    throw new Exception("Cannot find cookie key");
-                }
-            } finally {
-                if (File.Exists(StateFile.FullName)) {
-                    File.Delete(StateFile.FullName);
-                }
-            }
-        }
-        */
         private async Task FetchingAsync(Action action) {
             var query = new Queryer(Cookie, StudentSet);
             for (int year = (int)QueryYearLower; year <= (int)QueryYearUpper; year++) {
@@ -64,6 +48,7 @@ namespace StudentDataGetterApp {
                                 string studentId9 = $"{studentId8}{j}";
                                 bool res = await query.GetStudentData(studentId9, 10);
                                 if (!res) {
+                                    alreadyGetAllStudent = true;
                                     break;
                                 }
                             }
@@ -81,7 +66,7 @@ namespace StudentDataGetterApp {
                         }
                     }
                     //增加進度條
-                    action();
+                    action?.Invoke();
                 }
             }
         }

@@ -19,66 +19,23 @@ namespace StudentDataGetterApp {
     /// MainWindow.xaml 的互動邏輯
     /// </summary>
     public partial class MainWindow : Window {
-        private DataGetter dataGetter = new DataGetter();
+        private readonly DataGetter dataGetter = new();
         public MainWindow() {
             InitializeComponent();
             int minumumYear = 99;
             LowerYearComboBox.ItemsSource = Enumerable.Range(minumumYear, DateTime.Now.Year - (minumumYear + 1911) + 1).ToList();
             UpperYearComboBox.ItemsSource = Enumerable.Range(minumumYear, DateTime.Now.Year - (minumumYear + 1911) + 1).ToList();
         }
-        /*
-        private void CookieFileSelecter_Click(object sender, RoutedEventArgs e) {
-            var dialog = new Microsoft.Win32.OpenFileDialog {
-                DefaultExt = "",
-                InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\Google\\Chrome\\User Data\\Default\\Network",
-                FileName = "Cookies",
-            };
-            bool? result = dialog.ShowDialog();
-            if (result == true) {
-                dataGetter.CookieFile = new FileInfo(dialog.FileName);
-                //CookieFileLabel.Content = "現在開啟:" + dataGetter.CookieFile.FullName;
-            }
-        }
 
-        private void ChromeStateFileSelecter_Click(object sender, RoutedEventArgs e) {
-            var dialog = new Microsoft.Win32.OpenFileDialog {
-                DefaultExt = "",
-                InitialDirectory = "C:\\Users\\Username\\AppData\\Local\\Google\\Chrome\\User Data",
-                FileName = "Local State",
-            };
-            bool? result = dialog.ShowDialog();
-            if (result == true) {
-                dataGetter.StateFileOrigin = new FileInfo(dialog.FileName);
-                //ChromeStateFileLabel.Content = "現在開啟:" + dataGetter.CookieFile.FullName;
-            }
-        }
-        */
         private void LowerYearComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e) {
             int lowerYear = (int)LowerYearComboBox.SelectedItem;
             UpperYearComboBox.ItemsSource = Enumerable.Range(lowerYear, DateTime.Now.Year - (lowerYear + 1911) + 1).ToList();
         }
 
-        private void 日間部_Checked(object sender, RoutedEventArgs e) {
-
-        }
-
-        private void 進修部_Checked(object sender, RoutedEventArgs e) {
-            MessageBox.Show("暫不支援進修部", "錯誤", MessageBoxButton.OK, MessageBoxImage.Error);
-            進修部.IsChecked = false;
-        }
-
-        private void 學士班_Checked(object sender, RoutedEventArgs e) {
-
-        }
-
-        private void 碩士班_Checked(object sender, RoutedEventArgs e) {
-            MessageBox.Show("暫不支援碩士班", "錯誤", MessageBoxButton.OK, MessageBoxImage.Error);
-            碩士班.IsChecked = false;
-        }
-
-        private void 博士班_Checked(object sender, RoutedEventArgs e) {
-            MessageBox.Show("暫不支援博士班", "錯誤", MessageBoxButton.OK, MessageBoxImage.Error);
-            博士班.IsChecked = false;
+        private void 不支援部_Checked(object sender, RoutedEventArgs e) {
+            CheckBox checkBox = (CheckBox)sender;
+            MessageBox.Show($"暫不支援{checkBox.Content}", "錯誤", MessageBoxButton.OK, MessageBoxImage.Error);
+            checkBox.IsChecked = false;
         }
 
         private async void StartGetter_ClickAsync(object sender, RoutedEventArgs e) {
@@ -108,8 +65,8 @@ namespace StudentDataGetterApp {
             dataGetter.Cookie = CookieInput.Text;
             FetchingProgressBar.IsIndeterminate = true;
             try {
-                await dataGetter.StartFetchingAsync(() => { });
-            }catch(UnAuthorizedException) {
+                await dataGetter.StartFetchingAsync();
+            } catch(UnAuthorizedException) {
                 return;
             } finally {
                 FetchingProgressBar.IsIndeterminate = false;
@@ -134,11 +91,30 @@ namespace StudentDataGetterApp {
         }
 
         private void OpenResultDir_Click(object sender, RoutedEventArgs e) {
+            if(!Directory.Exists(".\\result")) {
+                Directory.CreateDirectory(".\\result");
+            }
             System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo {
                 FileName = "explorer.exe",
                 Arguments = ".\\result",
                 WindowStyle = System.Diagnostics.ProcessWindowStyle.Normal
             });
+        }
+
+        private async void GetCookieButton_ClickAsync(object sender, RoutedEventArgs e) {
+            var cookieFile = new FileInfo(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + @"\Google\Chrome\User Data\Default\Network\Cookies");
+            var chromeStateFile = new FileInfo(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + @"\Google\Chrome\User Data\Local State");
+            if (!cookieFile.Exists) {
+                MessageBox.Show("找不到Cookie檔案", "錯誤", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+            if (!chromeStateFile.Exists) {
+                MessageBox.Show("找不到Chrome Local State檔案", "錯誤", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+            string key = CookieGetter.GetKey(chromeStateFile);
+            string cookie = await CookieGetter.GetCookieAsync(cookieFile, key);
+            CookieInput.Text = cookie;
         }
     }
 }

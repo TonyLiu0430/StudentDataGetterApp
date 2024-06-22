@@ -8,19 +8,20 @@
         Title="MainWindow" Height="470" Width="800">
     <Grid Height="470" HorizontalAlignment="Left" VerticalAlignment="Top">
         <TextBlock HorizontalAlignment="Left" Margin="20,21,0,0" TextWrapping="Wrap" VerticalAlignment="Top" FontSize="30"><Run Language="zh-tw" Text="學生資料獲取小工具"/></TextBlock>
-        <Label Content="查詢起始年度" HorizontalAlignment="Left" Margin="20,231,0,0" VerticalAlignment="Top"/>
-        <Label Content="查詢結束年度" HorizontalAlignment="Left" Margin="170,231,0,0" VerticalAlignment="Top"/>
-        <ComboBox x:Name="LowerYearComboBox" HorizontalAlignment="Left" Margin="20,256,0,0" VerticalAlignment="Top" Width="120" SelectionChanged="LowerYearComboBox_SelectionChanged"/>
-        <ComboBox x:Name="UpperYearComboBox" HorizontalAlignment="Left" Margin="170,256,0,0" VerticalAlignment="Top" Width="120"/>
-        <CheckBox x:Name="日間部" Content="日間部" HorizontalAlignment="Left" Margin="20,293,0,0" VerticalAlignment="Top" IsChecked="True" Checked="日間部_Checked"/>
-        <CheckBox x:Name="進修部" Content="進修部" HorizontalAlignment="Left" Margin="93,293,0,0" VerticalAlignment="Top" IsChecked="False" Checked="進修部_Checked"/>
-        <CheckBox x:Name="學士班" Content="學士班" HorizontalAlignment="Left" Margin="20,323,0,0" VerticalAlignment="Top" IsChecked="True" Checked="學士班_Checked"/>
-        <CheckBox x:Name="碩士班" Content="碩士班" HorizontalAlignment="Left" Margin="92,323,0,0" VerticalAlignment="Top" Checked="碩士班_Checked"/>
-        <CheckBox x:Name="博士班" Content="博士班" HorizontalAlignment="Left" Margin="155,323,0,0" VerticalAlignment="Top" Checked="博士班_Checked"/>
+        <Label Content="查詢起始年度" HorizontalAlignment="Left" Margin="28,234,0,0" VerticalAlignment="Top"/>
+        <Label Content="查詢結束年度" HorizontalAlignment="Left" Margin="178,234,0,0" VerticalAlignment="Top"/>
+        <ComboBox x:Name="LowerYearComboBox" HorizontalAlignment="Left" Margin="28,259,0,0" VerticalAlignment="Top" Width="120" SelectionChanged="LowerYearComboBox_SelectionChanged"/>
+        <ComboBox x:Name="UpperYearComboBox" HorizontalAlignment="Left" Margin="178,259,0,0" VerticalAlignment="Top" Width="120"/>
+        <CheckBox x:Name="日間部" Content="日間部" HorizontalAlignment="Left" Margin="28,294,0,0" VerticalAlignment="Top" IsChecked="True"/>
+        <CheckBox x:Name="進修部" Content="進修部" HorizontalAlignment="Left" Margin="101,294,0,0" VerticalAlignment="Top" IsChecked="False" Checked="不支援部_Checked"/>
+        <CheckBox x:Name="學士班" Content="學士班" HorizontalAlignment="Left" Margin="28,324,0,0" VerticalAlignment="Top" IsChecked="True"/>
+        <CheckBox x:Name="碩士班" Content="碩士班" HorizontalAlignment="Left" Margin="100,324,0,0" VerticalAlignment="Top" Checked="不支援部_Checked"/>
+        <CheckBox x:Name="博士班" Content="博士班" HorizontalAlignment="Left" Margin="163,324,0,0" VerticalAlignment="Top" Checked="不支援部_Checked"/>
         <Button x:Name="StartGetter" Content="開始獲取" HorizontalAlignment="Left" Margin="20,369,0,0" VerticalAlignment="Top" Height="36" Width="120" Background="#FFA7FFED" BorderBrush="White" Click="StartGetter_ClickAsync"/>
         <Label Content="輸入Cookie字串" HorizontalAlignment="Left" Margin="21,64,0,0" VerticalAlignment="Top"/>
         <TextBox x:Name="CookieInput" HorizontalAlignment="Left" Margin="28,94,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="301" Height="132" Background="#FFF5FFFF" Initialized="CookieInput_Init"/>
-        <ProgressBar x:Name="FetchingProgressBar" HorizontalAlignment="Left" Height="22" Margin="302,376,0,0" VerticalAlignment="Top" Width="375"/>
+        <ProgressBar x:Name="FetchingProgressBar" HorizontalAlignment="Left" Height="22" Margin="324,376,0,0" VerticalAlignment="Top" Width="375"/>
         <Button x:Name="OpenResultDir" Content="開啟結果資料夾" HorizontalAlignment="Left" Margin="155,369,0,0" VerticalAlignment="Top" Height="36" Width="120" Background="#FFA7E5FF" BorderBrush="White" Click="OpenResultDir_Click"/>
+        <Button x:Name="GetCookieButton" Content="自動取得 cookie (chrome)" HorizontalAlignment="Left" Margin="134,67,0,0" VerticalAlignment="Top" RenderTransformOrigin="-0.639,0.04" Width="156" BorderBrush="#FFB9B9B9" Background="#FFDEFFE8" Click="GetCookieButton_ClickAsync"/>
     </Grid>
 </Window>
