@@ -14,7 +14,7 @@ namespace StudentDataGetterApp {
             new Department("716", "法律學系財經法組"),
             new Department("72", "公共行政暨政策學系"),
             new Department("73", "經濟學系"),
-            new Department("742", "社會學系"), //###
+            new Department("742", "社會學系"),
             new Department("744", "社會工作學系"),
             new Department("75", "財政學系"),
             new Department("76", "不動產與城鄉環境學系"),

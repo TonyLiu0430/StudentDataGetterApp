@@ -22,6 +22,5 @@
         <TextBox x:Name="CookieInput" HorizontalAlignment="Left" Margin="28,94,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="301" Height="132" Background="#FFF5FFFF" Initialized="CookieInput_Init"/>
         <ProgressBar x:Name="FetchingProgressBar" HorizontalAlignment="Left" Height="22" Margin="324,376,0,0" VerticalAlignment="Top" Width="375"/>
         <Button x:Name="OpenResultDir" Content="開啟結果資料夾" HorizontalAlignment="Left" Margin="155,369,0,0" VerticalAlignment="Top" Height="36" Width="120" Background="#FFA7E5FF" BorderBrush="White" Click="OpenResultDir_Click"/>
-        <Button x:Name="GetCookieButton" Content="自動取得 cookie (chrome)" HorizontalAlignment="Left" Margin="134,67,0,0" VerticalAlignment="Top" RenderTransformOrigin="-0.639,0.04" Width="156" BorderBrush="#FFB9B9B9" Background="#FFDEFFE8" Click="GetCookieButton_ClickAsync"/>
     </Grid>
 </Window>

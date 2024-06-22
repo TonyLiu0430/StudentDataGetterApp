@@ -102,6 +102,8 @@ namespace StudentDataGetterApp {
         }
 
         private async void GetCookieButton_ClickAsync(object sender, RoutedEventArgs e) {
+            MessageBox.Show("暫不支援功能", "錯誤", MessageBoxButton.OK, MessageBoxImage.Error);
+            return;
             var cookieFile = new FileInfo(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + @"\Google\Chrome\User Data\Default\Network\Cookies");
             var chromeStateFile = new FileInfo(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + @"\Google\Chrome\User Data\Local State");
             if (!cookieFile.Exists) {

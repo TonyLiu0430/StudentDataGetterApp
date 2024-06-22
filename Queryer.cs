@@ -85,12 +85,12 @@ namespace StudentDataGetterApp {
             // 讀取響應內容
             var responseBody = await response.Content.ReadAsStringAsync();
 
-            var res = Parseresponse(responseBody);
+            var res = ParseResponse(responseBody);
 
             return res;
         }
     
-        private bool Parseresponse(string responseBody) {
+        private bool ParseResponse(string responseBody) {
             var response = JObject.Parse(responseBody);
             var resultSet = response["Body"]["ResultSet"];
             var flag = false;
