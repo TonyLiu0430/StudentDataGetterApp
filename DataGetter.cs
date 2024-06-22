@@ -27,7 +27,7 @@ namespace StudentDataGetterApp {
             await FetchingAsync(action);
         }
         private async Task FetchingAsync(Action action) {
-            var query = new Queryer(Cookie, StudentSet);
+            using var query = new Queryer(Cookie, StudentSet);
             for (int year = (int)QueryYearLower; year <= (int)QueryYearUpper; year++) {
                 foreach (var department in Department.日間部學士班) {
                     string departmentId = department.Id;
@@ -77,42 +77,6 @@ namespace StudentDataGetterApp {
             File.Create(".\\result\\data.json").Close();
             File.WriteAllText(".\\result\\data.json", json);
         }
-#if null
-        private string GetCookie() {
-            using (var connection = new SqlConnection()) {
-                connection.ConnectionString = $@"Data Source={CookieFile.FullName};Read Only=True;";
-                connection.Open();
-                /*
-                SqliteCommand command = new SqliteCommand("select host_key,name,encrypted_value from cookies where name='public-token' and host_key='.cponline.cnipa.gov.cn'", connection);
-                SqliteDataReader dataReader = command.ExecuteReader();
-                dataReader.Read();
-                byte[] encryptedValue = (byte[])dataReader["encrypted_value"];
-                int keyLength = 256 / 8;
-                int nonceLength = 96 / 8;
-                String kEncryptionVersionPrefix = "v10";
-                int GCM_TAG_LENGTH = 16;
-                byte[] encryptedKeyBytes = Convert.FromBase64String(cookieKey);
-                encryptedKeyBytes = encryptedKeyBytes.Skip("DPAPI".Length).Take(encryptedKeyBytes.Length - "DPAPI".Length).ToArray();
-                var keyBytes = System.Security.Cryptography.ProtectedData.Unprotect(encryptedKeyBytes, null, System.Security.Cryptography.DataProtectionScope.CurrentUser);
-                var nonce = encryptedValue.Skip(kEncryptionVersionPrefix.Length).Take(nonceLength).ToArray();
-                encryptedValue = encryptedValue.Skip(kEncryptionVersionPrefix.Length + nonceLength).Take(encryptedValue.Length - (kEncryptionVersionPrefix.Length + nonceLength)).ToArray();
-                return WebUtility.UrlDecode(A);*/
-            }
-            return "";
-        }
-        */
-
-        private FileInfo CopyFile(FileInfo file, string fileName) {
-            string tempPath = $@"{Directory.GetCurrentDirectory()}\temp";
-            if (!Directory.Exists(tempPath)) {
-                Directory.CreateDirectory($@"{Directory.GetCurrentDirectory()}\temp");
-            }
-            if (file.Exists) {
-                file.CopyTo(tempPath + $@"\{fileName}", true);
-            }
-            return new FileInfo(tempPath + $@"\{fileName}");
-        }
-#endif
     }
 
 
